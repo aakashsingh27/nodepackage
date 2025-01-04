@@ -3,10 +3,50 @@
 const fs = require('fs');
 const path = require('path');
 
-// User ke project root directory me file banayenge
 const folderPath = path.join(process.cwd(), '../../src');
+const Controller_folder = path.join(process.cwd(), '../../App');
+const public_folder = path.join(process.cwd(), '../../public');
+const config_folder = path.join(process.cwd(), '../../config');
+const resources_folder = path.join(process.cwd(), '../../resources');
+const views_folder = path.join(process.cwd(), '../../resources/views');
+const Models_folder = path.join(process.cwd(), '../../App/Models');
+const routes_folder = path.join(process.cwd(), '../../App/routes');
+const Http_folder = path.join(process.cwd(), '../../App/Http');
+const Cntrlr_folder = path.join(process.cwd(), '../../App/Http/Controllers');
+const middleware_folder = path.join(process.cwd(), '../../App/Http/middleware');
+
 fs.mkdirSync(folderPath);
+fs.mkdirSync(Controller_folder);
+fs.mkdirSync(Models_folder);
+fs.mkdirSync(Http_folder);
+fs.mkdirSync(Cntrlr_folder);
+fs.mkdirSync(middleware_folder);
+fs.mkdirSync(routes_folder);
+fs.mkdirSync(public_folder);
+fs.mkdirSync(resources_folder);
+fs.mkdirSync(views_folder);
+fs.mkdirSync(config_folder);
+
 const filePath = path.join(process.cwd(), '../../src/app.js');
+const dbfile = path.join(process.cwd(), '../../config/db.js');
+const dbfileCOntent = `const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+    logging: false,
+    dialectOptions: {
+        ssl: false
+    }
+});
+
+sequelize.authenticate()
+    .then(() => {
+        console.log('Connected to the SQL database!');
+    })
+    .catch((err) => {
+        console.error('Unable to connect to the database:', err);
+    });
+module.exports = sequelize;`;
 
 const content = `require('dotenv').config();
 require('../config/db');
@@ -42,6 +82,14 @@ fs.writeFile(envfilepath, envcontent, (err) => {
         console.log('Error creating file:', err);
     } else {
         console.log('env File successfully created at:', filePath);
+    }
+});
+
+fs.writeFile(dbfile, dbfileCOntent, (err) => {
+    if (err) {
+        console.log('Error creating file:', err);
+    } else {
+        console.log('DB File successfully created at:', filePath);
     }
 });
 
